@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supermercado </title>
+<style>
+  :root {
+    --verde: #00994d;
+    --vermelho: #e60000;
+    --branco: #ffffff;
+    --cinza: #f5f5f5;
+    --sombra: rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--cinza);
+  }
+
+  header {
+    background: linear-gradient(to right, var(--verde), #00994d);
+    color: var(--branco);
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #logo {
+    height: 150px;
+    object-fit: contain;
+    align-items: center;
+    display: block;
+    margin: 0 auto;
+  }
+
+  #barraPesquisa {
+    margin: 15px auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  #pesquisaInput {
+    width: 60%;
+    padding: 10px;
+    border: 2px solid var(--verde);
+    border-radius: 8px;
+    outline: none;
+    font-size: 1em;
+  }
+
+  #pesquisaBtn {
+    background-color: var(--verde);
+    border: none;
+    color: var(--branco);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    position:"left";
+  }
+
+  #pesquisaBtn:hover {
+    background-color: var(--vermelho);
+  }
+
+  #categoriasContainer {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    position: relative;
+  }
+
+  #btnCategorias {
+    background-color: var(--verde);
+    color: var(--branco);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  #btnCategorias:hover {
+    background-color: var(--vermelho);
+  }
+
+  #menuCategorias {
+    display: none;
+    position: absolute;
+    top: 40px;
+    background-color: var(--branco);
+    border: 2px solid var(--verde);
+    border-radius: 8px;
+    flex-direction: column;
+    min-width: 150px;
+    z-index: 50;
+    box-shadow: 0 2px 6px var(--sombra);
+  }
+
+  .menu-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--verde);
+    text-align: center;
+  }
+
+  .menu-item:last-child {
+    border-bottom: none;
+  }
+
+  .menu-item:hover {
+    background-color: var(--verde);
+    color: var(--branco);
+  }
+
+  #produtos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .produto {
+    background-color: var(--branco);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px var(--sombra);
+    width: 200px;
+    text-align: center;
+    padding: 10px;
+    transition: transform 0.2s;
+  }
+
+  .produto:hover {
+    transform: scale(1.05);
+  }
+
+  .produto img {
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .produto h3 {
+    margin: 10px 0 5px;
+    color: #333;
+  }
+
+  .produto p {
+    color: var(--vermelho);
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  .quantidade {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .quantidade button {
+    padding: 5px 10px;
+    border: none;
+    background-color: var(--verde);
+    color: var(--branco);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .quantidade button:hover {
+    background-color: var(--vermelho);
+  }
+
+  .add-carrinho {
+    background-color: var(--verde);
+    color: var(--branco);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .add-carrinho:hover {
+    background-color: var(--vermelho);
+  }
+
+  #carrinhoContainer {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 300px;
+    max-height: 450px;
+    overflow-y: auto;
+    background-color: var(--branco);
+    border: 2px solid var(--verde);
+    border-radius: 10px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 2px 10px var(--sombra);
+    z-index: 100;
+  }
+
+  #carrinhoContainer h3 {
+    margin: 0 0 10px 0;
+    text-align: center;
+  }
+
+  #carrinhoContainer .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #valorTotal {
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  #finalizarCompra {
+    background-color: var(--verde);
+    color: var(--branco);
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+
+  #finalizarCompra:hover {
+    background-color: var(--vermelho);
+  }
+
+  footer {
+    background-color: var(--verde);
+    color: var(--branco);
+    text-align: center;
+    padding: 10px;
+    margin-top: 30px;
+  }
+
+  #loginArea {
+    display: none;
+    background-color: var(--branco);
+    border: 2px solid var(--verde);
+    border-radius: 8px;
+    padding: 15px;
+    width: 300px;
+    position: fixed;
+    top: 180px;
+    right: 20px;
+    z-index: 150;
+    box-shadow: 0 2px 10px var(--sombra);
+  }
+
+  #loginArea input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid var(--verde);
+    border-radius: 6px;
+  }
+
+  #loginArea button {
+    width: 100%;
+    padding: 8px;
+    background-color: var(--verde);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  #loginArea button:hover {
+    background-color: var(--vermelho);
+  }
+
+  #loginArea a {
+    color: var(--verde);
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  #loginArea a:hover {
+    color: var(--vermelho);
+  }
+
+  .carrossel {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 15px auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background: #fff;
+}
+
+.slides {
+  display: flex;
+  transition: transform 2.5s ease-in-out;
+}
+
+.slides img {
+  width: calc(500% / 4);
+  height: 300px;
+  object-fit: cover;
+}
+
+.btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+.btnRemover {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
+#carrinho {
+  font-family: Arial, sans-serif;
+}
+
+#itensCarrinho > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+#itensCarrinho > div span {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+}
+
+#itensCarrinho > div .preco {
+  width: 60px;
+  text-align: right;
+  font-weight: bold;
+}
+
+#itensCarrinho > div .btn-lixeira {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 8px;
+}
+/* --- ESTILO DO BOTÃO --- */
+#minhaContaBtn {
+  background-color: #ee0000;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#minhaContaBtn:hover {
+  background-color: #fc0202;
+}
+
+/* --- MODAL --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: black;
+  margin: 8% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+input {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 8px;
+}
+
+button {
+  margin-top: 10px;
+}
+
+.close {
+  float: right;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+a {
+  color: #000000;
+  cursor: pointer;
+}
+.carrinho-container {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  background: #fff;
+  border: 2px solid #00a000;
+  border-radius: 10px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.carrinho-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.fechar-carrinho {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+  transition: 0.2s;
+}
+
+.fechar-carrinho:hover {
+  color: red;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px;
+  margin-bottom: 8px;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+}
+
+.finalizar {
+  width: 100%;
+  padding: 10px;
+  background: #00a000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.fechar-carrinho {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+  transition: 0.2s;
+}
+
+.fechar-carrinho:hover {
+  color: red;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="1.png" alt="Sua logo aqui" id="logo">
+  <div>
+    <!-- BOTÃO MINHA CONTA -->
+<button id="minhaContaBtn">Minha Conta</button>
+
+<!-- MODAL DE LOGIN / CADASTRO -->
+<div id="modalConta" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+
+    <!-- LOGIN -->
+    <div id="loginSection">
+      <h2>Entrar</h2>
+      <input type="email" id="loginEmail" placeholder="E-mail" required>
+      <input type="password" id="loginSenha" placeholder="Senha" required>
+      <button id="btnLogin">Entrar</button>
+      <p>Não tem conta? <a id="mostrarCadastro">Cadastre-se</a></p>
+    </div>
+
+    <!-- CADASTRO -->
+    <div id="cadastroSection" style="display:none;">
+      <h2>Cadastrar</h2>
+      <input type="text" id="cadNome" placeholder="Nome completo" required>
+      <input type="email" id="cadEmail" placeholder="E-mail" required>
+      <input type="password" id="cadSenha" placeholder="Senha" required>
+      <input type="password" id="cadConfirmar" placeholder="Confirmar senha" required>
+      <button id="btnCadastrar">Cadastrar</button>
+      <p>Já tem conta? <a id="mostrarLogin">Entrar</a></p>
+    </div>
+
+    <!-- PERFIL -->
+    <div id="perfilSection" style="display:none;">
+      <h2>Minha Conta</h2>
+      <p><strong>Nome:</strong> <span id="userNome"></span></p>
+      <p><strong>Email:</strong> <span id="userEmail"></span></p>
+
+      <button id="editarSenhaBtn">Alterar Senha</button>
+      <button id="logoutBtn">Sair</button>
+
+      <div id="editarSenhaSection" style="display:none; margin-top:10px;">
+        <input type="password" id="novaSenha" placeholder="Nova senha">
+        <input type="password" id="confirmarNovaSenha" placeholder="Confirmar nova senha">
+        <button id="salvarNovaSenha">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <button id="verCarrinho" class="add-carrinho">🛒 Carrinho (<span id="totalItens">0</span>)</button>
+  </div>
+</header>
+
+<div id="barraPesquisa">
+  <input type="text" id="pesquisaInput" placeholder="Pesquisar produto...">
+  <button id="pesquisaBtn">Buscar</button>
+</div>
+<div class="carrossel">
+  <div class="slides">
+    <img src="1.jpg" alt="Imagem 1" />
+    <img src="2.jpg" alt="Imagem 2" />
+    <img src="3.jpg" alt="Imagem 3" />
+    <img src="4.jpg" alt="Imagem 4" />
+    <img src="5.jpg" alt="Imagem 5" />
+    <img src="6.jpg" alt="Imagem 6" />
+    <img src="7.jpg" alt="Imagem 7" />
+    <img src="8.jpg" alt="Imagem 8" />
+    <img src="9.jpg" alt="Imagem 9" />
+  </div>
+  <button class="btn prev">&#10094;</button>
+  <button class="btn next">&#10095;</button>
+</div>
+
+<div id="categoriasContainer">
+  <button id="btnCategorias">Categorias ▼</button>
+  <div id="menuCategorias">
+    <div class="menu-item" onclick="mostrarProdutos(produtos)">Todas</div>
+    <div class="menu-item" onclick="mostrarCategoria('bebida')">Bebidas</div>
+    <div class="menu-item" onclick="mostrarCategoria('cereal')">Cereais</div>
+    <div class="menu-item" onclick="mostrarCategoria('fruta')">Frutas</div>
+    <div class="menu-item" onclick="mostrarCategoria('gulouseima')">Guloseimas</div>
+    <div class="menu-item" onclick="mostrarCategoria('higiene')">Higiene</div>
+    <div class="menu-item" onclick="mostrarCategoria('limpeza')">Limpeza</div>
+    <div class="menu-item" onclick="mostrarCategoria('verdura')">Verduras</div>
+  </div>
+</div>
+
+<main id="produtos"></main>
+<div id="carrinhoContainer">
+  <button class="fechar-carrinho" onclick="fecharCarrinho()">✖</button>
+  <h3>Carrinho</h3>
+  <div id="itensCarrinho"></div>
+  <div id="valorTotal">Total: R$ 0.00</div>
+  <button id="finalizarCompra"
+    onclick="window.location.href='Pedido.html'"
+    onclick="enviarPedido()"> Finalizar pedido </button>
+  </button>
+</div>
+
+<div id="loginArea">
+  <div id="loginBox">
+    <h3>Login</h3>
+    <input type="text" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginSenha" placeholder="Senha">
+    <button onclick="fazerLogin()">Entrar</button>
+    <p>Não tem conta? <a href="#" id="mostrarCadastro">Cadastre-se</a></p>
+  </div>
+
+  <div id="cadastroBox" style="display: none;">
+    <h3>Cadastrar</h3>
+    <input type="text" id="cadastroNome" placeholder="Nome completo">
+    <input type="text" id="cadastroEmail" placeholder="Email">
+    <input type="password" id="cadastroSenha" placeholder="Senha">
+    <button onclick="fazerCadastro()">Cadastrar</button>
+    <p>Já tem conta? <a href="#" id="mostrarLogin">Fazer login</a></p>
+  </div>
+</div>
+
+<div id="dadosConta" style="display: none;">
+  <h3>Minha Conta</h3>
+  <p><strong>Nome:</strong> <span id="contaNome"></span></p>
+  <p><strong>Email:</strong> <span id="contaEmail"></span></p>
+  <p><strong>Senha:</strong> <span id="contaSenha"></span></p>
+  <button onclick="logout()">Sair</button>
+</div>
+
+<footer>
+  <p>© 2025 Catalogo Virtual - Todos os direitos reservados.</p>
+</footer>
+
+<script>
+  const produtos = [
+{ nome: 'Abacate (KG)', preco: 8.39, categoria: 'fruta', img: 'fruta1.jpeg' },
+{ nome: 'Abacaxi (UN)', preco: 2.49, categoria: 'fruta', img: 'fruta2.jpeg' },
+{ nome: 'Água mineral com gás 500 ml (Sterbom)', preco: 1.85, categoria: 'bebida', img: 'bebida2.jpeg' },
+{ nome: 'Água mineral sem gás 510 ml (Sterbom)', preco: 1.05, categoria: 'bebida', img: 'bebida3.jpeg' },
+{ nome: 'Alface (UN)', preco: 1.99, categoria: 'verdura', img: 'verdura1.jpeg' },
+{ nome: 'Alho (KG)', preco: 27.25, categoria: 'verdura', img: 'verdura2.jpeg' },
+{ nome: 'Amaciante 500ml (Downy)', preco: 11.99, categoria: 'limpeza', img: 'limpeza1.jpeg' },
+{ nome: 'Arroz 1KG (Urbano)', preco: 5.19, categoria: 'cereal', img: 'cereal2.jpeg' },
+{ nome: 'Banana (UN)', preco: 0.35, categoria: 'fruta', img: 'fruta3.jpeg' },
+{ nome: 'Barra de Chocolate 80g (Nestle)', preco: 7.49, categoria: 'gulouseima', img: 'gulouseima2.jpeg' },
+{ nome: 'Batata (KG)', preco: 3.99, categoria: 'verdura', img: 'verdura4.jpeg' },
+{ nome: 'Batata Chips 115g (Ruffles)', preco: 8.65, categoria: 'gulouseima', img: 'gulouseima5.jpeg' },
+{ nome: 'Biscoito Recheado 130g (Passatempo)', preco: 3.15, categoria: 'gulouseima', img: 'gulouseima1.jpeg' },
+{ nome: 'Biscoito Recheado 90g (Oreo)', preco: 4.49, categoria: 'gulouseima', img: 'gulouseima7.jpeg' },
+{ nome: 'Biscoito Wafer 80g (Vitarella)', preco: 1.95, categoria: 'gulouseima', img: 'gulouseima3.jpeg' },
+{ nome: 'Café 250g (Kimimo)', preco: 18.29, categoria: 'cereal', img: 'cereal3.jpeg' },
+{ nome: 'Cebola branca (KG)', preco: 2.05, categoria: 'verdura', img: 'verdura7.jpeg' },
+{ nome: 'Cebola roxa (KG)', preco: 3.79, categoria: 'verdura', img: 'verdura6.jpeg' },
+{ nome: 'Cenoura (KG)', preco: 4.19, categoria: 'verdura', img: 'verdura5.jpeg' },
+{ nome: 'Creme Dental 90g (Colgate)', preco: 4.99, categoria: 'higiene', img: 'higiene6.jpeg' },
+{ nome: 'Creme de Avelã 350g (Nutella)', preco: 27.99, categoria: 'gulouseima', img: 'gulouseima4.jpeg' },
+{ nome: 'Detergente 500ml (Ypê)', preco: 3.39, categoria: 'limpeza', img: 'limpeza6.jpeg' },
+{ nome: 'Desodorante 89g (Rexona)', preco: 15.19, categoria: 'higiene', img: 'higiene1.jpeg' },
+{ nome: 'Farinha de trigo sem fermento 1KG (Dona Benta)', preco: 4.95, categoria: 'cereal', img: 'cereal7.jpeg' },
+{ nome: 'Feijão Carioca 1KG (Urbano)', preco: 5.90, categoria: 'cereal', img: 'cereal4.jpeg' },
+{ nome: 'Fralda M 26 UN (Mili)', preco: 32.80, categoria: 'higiene', img: 'higiene3.jpeg' },
+{ nome: 'Haste Flexível 150 UN (Cotonetes)', preco: 12.49, categoria: 'higiene', img: 'higiene7.jpeg' },
+{ nome: 'Kit Shampoo 300ml e Condicionador 190ml (Seda)', preco: 19.65, categoria: 'higiene', img: 'higiene4.jpeg' },
+{ nome: 'Leite em pó integral 575g (Ninho)', preco: 32.39, categoria: 'cereal', img: 'cereal5.jpeg' },
+{ nome: 'Laranja (UN)', preco: 0.55, categoria: 'fruta', img: 'fruta4.jpeg' },
+{ nome: 'Maçã (KG)', preco: 14.99, categoria: 'fruta', img: 'fruta5.jpeg' },
+{ nome: 'Mamão (KG)', preco: 4.39, categoria: 'fruta', img: 'fruta6.jpeg' },
+{ nome: 'Massa de bolo 400g (Finna)', preco: 6.49, categoria: 'cereal', img: 'cereal6.jpeg' },
+{ nome: 'Melão (KG)', preco: 2.69, categoria: 'fruta', img: 'fruta7.jpeg' },
+{ nome: 'Papel Higiênico 4 rolos (Mili)', preco: 7.20, categoria: 'limpeza', img: 'limpeza3.jpeg' },
+{ nome: 'Perfume Alfazema 200ml (Johnson)', preco: 31.79, categoria: 'higiene', img: 'higiene5.jpeg' },
+{ nome: 'Refrigerante 1L (Guaraná)', preco: 5.35, categoria: 'bebida', img: 'bebida7.jpeg' },
+{ nome: 'Refrigerante 2L (Pepsi)', preco: 8.79, categoria: 'bebida', img: 'bebida1.jpeg' },
+{ nome: 'Refrigerante 350 ml (Coca-Cola)', preco: 3.49, categoria: 'bebida', img: 'bebida5.jpeg' },
+{ nome: 'Sabão em Barra 900g (Ypê)', preco: 11.28, categoria: 'limpeza', img: 'limpeza7.jpeg' },
+{ nome: 'Sabão em Pó 400g (Ala)', preco: 3.29, categoria: 'limpeza', img: 'limpeza5.jpeg' },
+{ nome: 'Sabonete 85g (Lux)', preco: 2.79, categoria: 'higiene', img: 'higiene2.jpeg' },
+{ nome: 'Suco 200 ml (Kapo)', preco: 2.49, categoria: 'bebida', img: 'bebida4.jpeg' },
+{ nome: 'Suco de laranja 1L (Tampico)', preco: 8.59, categoria: 'bebida', img: 'bebida6.jpeg' },
+{ nome: 'Tomate (KG)', preco: 0.95, categoria: 'verdura', img: 'verdura3.jpeg' },
+];
+
+let carrinho = {};
+let usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado")) || null;
+
+const produtosContainer = document.getElementById('produtos');
+const pesquisaInput = document.getElementById('pesquisaInput');
+const pesquisaBtn = document.getElementById('pesquisaBtn');
+const carrinhoContainer = document.getElementById('carrinhoContainer');
+const itensCarrinho = document.getElementById('itensCarrinho');
+const totalItensSpan = document.getElementById('totalItens');
+const valorTotalDiv = document.getElementById('valorTotal');
+const menuCategorias = document.getElementById('menuCategorias');
+const btnCategorias = document.getElementById('btnCategorias');
+const loginArea = document.getElementById('loginArea');
+const loginBox = document.getElementById('loginBox');
+const cadastroBox = document.getElementById('cadastroBox');
+const dadosConta = document.getElementById('dadosConta');
+const minhaContaBtn = document.getElementById('minhaContaBtn');
+
+document.getElementById('mostrarCadastro').addEventListener('click', () => {
+  loginBox.style.display = 'none';
+  cadastroBox.style.display = 'block';
+});
+document.getElementById('mostrarLogin').addEventListener('click', () => {
+  cadastroBox.style.display = 'none';
+  loginBox.style.display = 'block';
+});
+
+btnCategorias.addEventListener('click', () => {
+  menuCategorias.style.display = menuCategorias.style.display === 'flex' ? 'none' : 'flex';
+});
+
+function atualizarCarrinho() {
+  itensCarrinho.innerHTML = '';
+  let totalItens = 0;
+  let totalValor = 0;
+  for (const nome in carrinho) {
+    const item = carrinho[nome];
+    totalItens += item.quantidade;
+    totalValor += item.quantidade * item.preco;
+    const div = document.createElement('div');
+    div.classList.add('item');
+    div.innerHTML = `<span>${nome} x ${item.quantidade}</span><span>R$ ${(item.preco * item.quantidade).toFixed(2)}</span>`;
+    itensCarrinho.appendChild(div);
+  }
+  totalItensSpan.textContent = totalItens;
+  valorTotalDiv.textContent = `Total: R$ ${totalValor.toFixed(2)}`;
+}
+
+function mostrarProdutos(lista) {
+  produtosContainer.innerHTML = '';
+  lista.forEach(produto => {
+    const div = document.createElement('div');
+    div.classList.add('produto');
+    div.innerHTML = `
+      <img src="${produto.img}" alt="${produto.nome}">
+      <h3>${produto.nome}</h3>
+      <p>R$ ${produto.preco.toFixed(2)}</p>
+      <div class="quantidade">
+        <button class="menos">-</button>
+        <span class="qtd">1</span>
+        <button class="mais">+</button>
+      </div>
+      <button class="add-carrinho">Adicionar</button>
+    `;
+    produtosContainer.appendChild(div);
+
+    const maisBtn = div.querySelector('.mais');
+    const menosBtn = div.querySelector('.menos');
+    const qtdSpan = div.querySelector('.qtd');
+    const addBtn = div.querySelector('.add-carrinho');
+
+    maisBtn.addEventListener('click', () => qtdSpan.textContent = parseInt(qtdSpan.textContent) + 1);
+    menosBtn.addEventListener('click', () => {
+      let qtd = parseInt(qtdSpan.textContent);
+      if (qtd > 1) qtdSpan.textContent = qtd - 1;
+    });
+    addBtn.addEventListener('click', () => {
+      const qtd = parseInt(qtdSpan.textContent);
+      if (carrinho[produto.nome]) carrinho[produto.nome].quantidade += qtd;
+      else carrinho[produto.nome] = { preco: produto.preco, quantidade: qtd };
+      atualizarCarrinho();
+    });
+  });
+}
+
+function mostrarCategoria(cat) {
+  const filtrados = produtos.filter(p => p.categoria === cat);
+  mostrarProdutos(filtrados);
+}
+
+pesquisaBtn.addEventListener('click', () => {
+  const termo = pesquisaInput.value.toLowerCase();
+  const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
+  mostrarProdutos(filtrados);
+});
+
+document.getElementById('verCarrinho').addEventListener('click', () => {
+  carrinhoContainer.style.display = carrinhoContainer.style.display === 'flex' ? 'none' : 'flex';
+});
+
+document.getElementById('finalizarCompra').addEventListener('click', () => {
+  if (Object.keys(carrinho).length === 0) return alert('Carrinho vazio!');
+  alert('Compra finalizada com sucesso!');
+  carrinho = {};
+  atualizarCarrinho();
+  carrinhoContainer.style.display = 'none';
+});
+
+mostrarProdutos(produtos);
+if (usuarioLogado) mostrarDadosConta();
+</script>
+<script>
+const slides = document.querySelector(".slides");
+const imagens = document.querySelectorAll(".slides img");
+const prev = document.querySelector(".prev");
+const next = document.querySelector(".next");
+
+const visiveis = 3;
+let index = 0;
+
+function mostrarSlide() {
+  const total = imagens.length;
+  const maxIndex = Math.ceil(total / visiveis) - 1;
+  if (index > maxIndex) index = 0;
+  if (index < 0) index = maxIndex;
+  slides.style.transform = `translateX(${-index * 100}%)`;
+}
+
+next.addEventListener("click", () => {
+  index++;
+  mostrarSlide();
+});
+
+prev.addEventListener("click", () => {
+  index--;
+  mostrarSlide();
+});
+
+setInterval(() => {
+  index++;
+  mostrarSlide();
+}, 5000);
+</script>
+<script>
+const carrinhoObserver = new MutationObserver(() => {
+  const itens = document.querySelectorAll('#itensCarrinho > div');
+
+  itens.forEach(item => {
+    // Só adiciona o botão se ainda não existir
+    if (!item.querySelector('.btnRemover')) {
+      const botaoRemover = document.createElement('button');
+      botaoRemover.textContent = '🗑️';
+      botaoRemover.classList.add('btnRemover');
+      botaoRemover.onclick = () => removerItem(botaoRemover);
+      item.appendChild(botaoRemover);
+    }
+  });
+});
+
+// Observa mudanças no carrinho (quando novos itens são adicionados)
+carrinhoObserver.observe(document.getElementById('itensCarrinho'), { childList: true });
+
+// Função para remover o item e atualizar o total
+function removerItem(botao) {
+  const item = botao.parentElement;
+  item.remove();
+  atualizarTotal();
+}
+
+// Recalcula o total após remoção
+function atualizarTotal() {
+  let total = 0;
+  document.querySelectorAll('#itensCarrinho div').forEach(item => {
+    const precoTexto = item.textContent.match(/R\$ ?([\d,.]+)/);
+    if (precoTexto) total += parseFloat(precoTexto[1].replace(',', '.'));
+  });
+  document.getElementById('valorTotal').textContent = 'Total: R$ ' + total.toFixed(2);
+}
+</script>
+<!-- Biblioteca do EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+// Inicializa o EmailJS
+(function(){
+    emailjs.init("xljGW3_z7CeeU1d3w"); // Substitua pelo seu User ID
+})();
+
+function enviarEmailPedido(nome, pedido, valorTotal) {
+    emailjs.send("service_dpcnal6", "template_yrp5xkv", {
+        nome_cliente: nome,
+        pedido: pedido,
+        valor_total: valorTotal
+    })
+    .then(function(response) {
+        console.log("✅ Pedido enviado com sucesso!", response.status, response.text);
+        alert("Compra finalizada! A loja recebeu seu pedido.");
+    }, function(error) {
+        console.error("❌ Erro ao enviar email:", error);
+        alert("Erro ao enviar o pedido. Tente novamente.");
+    });
+}
+
+// Exemplo de uso – chame esta função ao finalizar compra
+function finalizarCompra() {
+    // Pegue os dados do carrinho ou do usuário
+    const nomeCliente = document.getElementById("nomeUsuario").value; 
+    // ou pegue de uma variável
+
+    const pedido = JSON.parse(localStorage.getItem("carrinho"))
+        .map(item => `${item.nome} (x${item.quantidade})`)
+        .join(", ");
+
+    const valorTotal = document.getElementById("valorTotal").innerText;
+
+    // Envia o email
+    enviarEmailPedido(nomeCliente, pedido, valorTotal);
+}
+</script>
+
+<script>
+  const btnConta = document.getElementById('minhaContaBtn');
+const modal = document.getElementById('modalConta');
+const close = document.querySelector('.close');
+const loginSec = document.getElementById('loginSection');
+const cadastroSec = document.getElementById('cadastroSection');
+const perfilSec = document.getElementById('perfilSection');
+
+const mostrarCadastro = document.getElementById('mostrarCadastro');
+const mostrarLogin = document.getElementById('mostrarLogin');
+
+const btnLogin = document.getElementById('btnLogin');
+const btnCadastrar = document.getElementById('btnCadastrar');
+const logoutBtn = document.getElementById('logoutBtn');
+const editarSenhaBtn = document.getElementById('editarSenhaBtn');
+const editarSenhaSec = document.getElementById('editarSenhaSection');
+const salvarNovaSenha = document.getElementById('salvarNovaSenha');
+
+// ABRIR / FECHAR MODAL
+btnConta.onclick = () => {
+  modal.style.display = "block";
+  atualizarInterface();
+};
+
+close.onclick = () => modal.style.display = "none";
+window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+// TROCA DE TELA LOGIN / CADASTRO
+mostrarCadastro.onclick = () => { loginSec.style.display = 'none'; cadastroSec.style.display = 'block'; };
+mostrarLogin.onclick = () => { cadastroSec.style.display = 'none'; loginSec.style.display = 'block'; };
+
+// CADASTRO
+btnCadastrar.onclick = () => {
+  const nome = document.getElementById('cadNome').value.trim();
+  const email = document.getElementById('cadEmail').value.trim();
+  const senha = document.getElementById('cadSenha').value;
+  const confirmar = document.getElementById('cadConfirmar').value;
+
+  const senhaValida = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  if (!senhaValida.test(senha)) {
+    alert('A senha deve ter no mínimo 8 caracteres, com letras, números e símbolos.');
+    return;
+  }
+  if (senha !== confirmar) {
+    alert('As senhas não coincidem.');
+    return;
+  }
+
+  const usuario = { nome, email, senha };
+  localStorage.setItem('usuario', JSON.stringify(usuario));
+  alert('Cadastro realizado com sucesso!');
+  cadastroSec.style.display = 'none';
+  loginSec.style.display = 'block';
+};
+
+// LOGIN
+btnLogin.onclick = () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+  if (usuario && usuario.email === email && usuario.senha === senha) {
+    localStorage.setItem('logado', 'true');
+    alert('Login realizado com sucesso!');
+    atualizarInterface();
+  } else {
+    alert('Email ou senha incorretos.');
+  }
+};
+
+// LOGOUT
+logoutBtn.onclick = () => {
+  localStorage.removeItem('logado');
+  atualizarInterface();
+};
+
+// EXIBIR PERFIL
+function atualizarInterface() {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const logado = localStorage.getItem('logado') === 'true';
+
+  if (usuario && logado) {
+    btnConta.textContent = 'Minha Conta (' + usuario.nome.split(' ')[0] + ')';
+    loginSec.style.display = 'none';
+    cadastroSec.style.display = 'none';
+    perfilSec.style.display = 'block';
+    document.getElementById('userNome').textContent = usuario.nome;
+    document.getElementById('userEmail').textContent = esconderEmail(usuario.email);
+  } else {
+    btnConta.textContent = 'Minha Conta';
+    perfilSec.style.display = 'none';
+    loginSec.style.display = 'block';
+  }
+}
+
+function esconderEmail(email) {
+  const [user, domain] = email.split('@');
+  return user[0] + '***@' + domain;
+}
+
+// ALTERAR SENHA
+editarSenhaBtn.onclick = () => {
+  editarSenhaSec.style.display = editarSenhaSec.style.display === 'none' ? 'block' : 'none';
+};
+
+salvarNovaSenha.onclick = () => {
+  const nova = document.getElementById('novaSenha').value;
+  const confirmar = document.getElementById('confirmarNovaSenha').value;
+  const senhaValida = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+  if (!senhaValida.test(nova)) {
+    alert('A nova senha deve ter letras, números e símbolos (mín. 8 caracteres).');
+    return;
+  }
+  if (nova !== confirmar) {
+    alert('As senhas não coincidem.');
+    return;
+  }
+
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  usuario.senha = nova;
+  localStorage.setItem('usuario', JSON.stringify(usuario));
+  alert('Senha alterada com sucesso!');
+  editarSenhaSec.style.display = 'none';
+};
+
+// VERIFICA LOGIN AO CARREGAR
+window.onload = atualizarInterface;
+</script>
+<script>
+
+  function fecharCarrinho() {
+  document.getElementById("carrinhoContainer").style.display = "none";
+}
+</script>
+
+</body>
+</html>
